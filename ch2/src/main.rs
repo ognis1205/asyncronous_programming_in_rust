@@ -1,13 +1,6 @@
-trait SimpleFuture {
-    type Output;
+use std::cell::RefCell;
 
-    fn poll(&mut self, wake: fn()) -> Poll<Self::Output>;
-}
-
-enum Poll<T> {
-    Ready(T),
-    Pending,
-}
+thread_local!(static NOTIFY: RefCell<bool> = RefCell::new(true));
 
 fn main() {
     println!("Hello, world!");
