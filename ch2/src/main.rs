@@ -50,6 +50,27 @@ trait Future {
     fn poll(&mut self, ctx: &Context) -> Poll<Self::Output>;
 }
 
+#[derive(Default)]
+struct MyFuture {
+    count: i32,
+}
+
+impl Future for MyFuture {
+    type Output = i32;
+
+    fn poll(&mut self, ctx: &Context) -> Poll<Self::Output> {
+        match self.count {
+            3 => Poll::Ready(self.count),
+            _ => {
+                self.count += 1;
+                ctx.waker.wake();
+                Poll::Pending
+            }
+        }
+    }
+}
+
 fn main() {
-    println!("Hello, world!");
+    let f = MyFuture::default();
+    println!("Output: {}", run(f));
 }
